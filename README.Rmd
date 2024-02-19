@@ -1,0 +1,60 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# struct
+
+{struct} provides ways to modify objects more strictly, guaranteeing that we
+keep the type of the modified element, where type is defined by `vctrs::vec_ptype()`.
+
+The `struct()` function gives a subclass "struct" to the objects if its internal
+type is list (thus including data frames), and recursively to its list components.
+
+When assigning new values, we give it the "struct" subclass if relevant then 
+use `vctrs::vec_cast()` to check the compatibility of the input with the output,
+and apply coercion if necessary.
+
+## Installation
+
+Install with:
+
+``` r
+remotes::install_github("cynkra/struct")
+```
+
+## Example
+
+```{r, error = TRUE}
+library(struct)
+library(tibble)
+
+x1 <- tibble(
+  a = 1:2,
+  b = list(tibble(c = 3:4, d = 5:6)),
+  c = tibble(e = 7:8, f = 9:10)
+)
+
+x2 <- struct(x1)
+
+# works
+x2$a <- 11:12
+x2$b <- list(tibble(c = 13:14, d = 15:16))
+x2$c <- tibble(e = 17:18, f = 19:20)
+
+# fails
+x2$a <- c("a", "b")
+x2$b <- list("a", "b")
+x2$c <- 1
+x2[["z"]]
+```
