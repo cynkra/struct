@@ -11,4 +11,8 @@ RoxygenNote: 7.3.1
 Imports: 
     purrr,
     rlang,
+    tibble,
     vctrs
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
