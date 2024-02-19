@@ -8,6 +8,14 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/cynkra/struct}
+  \item Report bugs at \url{https://github.com/cynkra/struct/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: antoine fabri \email{antoine.fabri@gmail.com}
 

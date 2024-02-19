@@ -11,6 +11,7 @@ test_that("snapshot tests", {
     x2$a <- 11:12
     x2$b <- list(tibble(c = 13:14, d = 15:16))
     x2$c <- tibble(e = 17:18, f = 19:20)
+    x2$c$e <- 21:22
     x2
   })
 
