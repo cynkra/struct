@@ -41,11 +41,10 @@ subset2 <- function(x, ...) {
 set1 <- function(x, ..., value) {
   # cast non struct inputs to struct
   value <- struct(value)
-  old <- x[...]
   # unclass and reclass to avoid recursion issues
   cl <- class(x)
   x <- unclass(x)
-  x[...] <- vctrs::vec_cast(value, old)
+  x[...] <- purrr::map2(x[...], value, function(old, new) vctrs::vec_cast(new, old))
   class(x) <- cl
   x
 }
