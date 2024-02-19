@@ -7,7 +7,13 @@
 that we keep the type of the modified element, where type is defined by
 `vctrs::vec_ptype()`.
 
-This is designed to work with nested tibbles
+The `struct()` function gives a subclass “struct” to the objects if its
+internal type is list (thus including data frames), and recursively to
+its list components.
+
+When assigning new values, we give it the “struct” subclass if relevant
+then use `vctrs::vec_cast()` to check the compatibility of the input
+with the output, and apply coercion if necessary.
 
 ## Installation
 
