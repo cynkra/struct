@@ -4,6 +4,13 @@
       x2$a <- 11:12
       x2$b <- list(tibble(c = 13:14, d = 15:16))
       x2$c <- tibble(e = 17:18, f = 19:20)
+      x2
+    Output
+      # A tibble: 2 x 3
+            a        b   c$e    $f
+      * <int> <struct> <int> <int>
+      1    11  [2 x 2]    17    19
+      2    12  [2 x 2]    18    20
 
 ---
 
