@@ -2,76 +2,55 @@
 
 #' @export
 struct <- function(x) {
-  # no op on non tibbles
-  if (!is.list(x)) return(x)
-  # recurse into tibble columns
-  x[] <- purrr::map(x, struct)
-  if (rlang::is_bare_list(x)) x <- vctrs::as_list_of(x)
+  # no op on non lists and struct objects
+  if (is_struct(x) || !is.list(x)) return(x)
+
+  # to struct a data.frame, we struct all its columns and give it a class
+  if (is.data.frame(x)) {
+    browser()
+    return(as_n_struct(x))
+  }
+
+  if (rlang::is_named(x)) {
+    return(struct_named_list(x))
+  }
+
+  struct_unnamed_list(x)
+}
+
+is_struct <- function(x) {
+  inherits(x, "struct")
+}
+
+as_n_struct <- function(x) {
+  if (inherits(x, "n_struct")) return(x)
+  x[] <- lapply(x, struct)
+  structure(x, class = union("n_struct", class(x)))
+}
+
+struct_unnamed_list <- function(x) {
+  rlang::try_fetch(
+    as_list_of(x),
+    vctrs_error_ptype2 = function(cnd) {
+      msg <- "Can't convert object to a struct"
+      info <- "List elements must be either fully named to be converted to struct or of consistent type to be converted to list_of"
+      rlang::abort(c(msg, i = info), parent = cnd)
+    }
+  )
+}
+
+struct_named_list <- function(x) {
+  # lists are turned into one row tibbles, we nest every element, not just
+  # those of length > 1
+  attrs <- attributes(x)
+  x[] <- lapply(x, function(elt) {
+    nested_elt <- if (is.null(elt)) list(NULL) else list_of(struct(elt))
+    structure(nested_elt, class = union("struct_elt", class(nested_elt)))
+  })
   structure(x, class = union("struct", class(x)))
 }
 
 unstruct <- function(x) {
   class(x) <- setdiff(class(x), "struct")
   x
-}
-
-# safe subset
-
-subset2 <- function(x, ...) {
-  x <- .subset2(x, ...)
-  # tibbles and nests can't have NULL elements so NULL means inexistent
-  if (is.null(x)) {
-    rlang::abort("invalid index")
-  }
-  x
-}
-
-#' @export
-`[[.struct` <- function(x, ...) {
-  subset2(x, ...)
-}
-
-#' @export
-`[[.nest` <- function(x, ...) {
-  subset2(x, ...)
-}
-
-# safe update
-
-set1 <- function(x, ..., value) {
-  # cast non struct inputs to struct
-  value <- struct(value)
-  # unclass and reclass to avoid recursion issues
-  cl <- class(x)
-  x <- unclass(x)
-  x[...] <- purrr::map2(x[...], value, function(old, new) vctrs::vec_cast(new, old))
-  class(x) <- cl
-  x
-}
-
-set2 <- function(x, ..., value) {
-  # cast non struct inputs to struct
-  value <- struct(value)
-  old <- x[[...]]
-  # unclass and reclass to avoid recursion issues
-  cl <- class(x)
-  x <- unclass(x)
-  x[[...]] <- vctrs::vec_cast(value, old)
-  class(x) <- cl
-  x
-}
-
-#' @export
-`[<-.struct` <- function(x, ..., value) {
-  set1(x, ..., value = value)
-}
-
-#' @export
-`[[<-.struct` <- function(x, ..., value) {
-  set2(x, ..., value = value)
-}
-
-#' @export
-`$<-.struct` <- function(x, name, value) {
-  set2(x, name, value = value)
 }
