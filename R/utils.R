@@ -1,4 +1,5 @@
 
+#' @export
 deep_struct <- function(x, detect_scalar = TRUE, detect_list_of = TRUE) {
   # atomics are returned unchanged unless they're detected as scalars
   if (!is.list(x)) {
@@ -27,6 +28,7 @@ deep_struct <- function(x, detect_scalar = TRUE, detect_list_of = TRUE) {
   }
 }
 
+#' @export
 deep_unstruct <- function(x, un_list_of = FALSE) {
   if (!is.list(x)) return(un_scalar(x))
   if (un_list_of && vctrs::is_list_of(x)) {
