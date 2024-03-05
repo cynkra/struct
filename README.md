@@ -29,30 +29,50 @@ remotes::install_github("cynkra/struct")
 library(struct)
 library(tibble)
 
-x1 <- tibble(
-  a = 1:2,
+x1 <- list(
+  a = 1,
   b = list(tibble(c = 3:4, d = 5:6)),
-  c = tibble(e = 7:8, f = 9:10)
+  c = tibble(e = 7:8, f = 9:10),
+  y = list(z = c("a", "b"))
 )
+x2 <- deep_struct(x1)
 
-x2 <- struct(x1)
+x2
+#> # list_struct object: 4 element(s)
+#>   a            b                        c                  y             
+#> * <dbl>        <list<tbbl_str[,2]>>     <tbbl_str[,2]>     <named list>  
+#> 1 <scalar [1]> <list<tbbl_str[,2]> [1]> <tbbl_str [2 × 2]> <lst_strc [1]>
+
+print_tree(x2)
+#> █─ x2 <lst_strc>
+#> ├─── a <scalar>
+#> ├─█─ b <list<tbbl_str[,2]>>
+#> ├─█─ c <tbbl_str[,2]>
+#>   ├─── e <int>
+#>   ├─── f <int>
+#> ├─█─ y <lst_strc>
+#>   ├─── z <chr>
 
 # works
-x2$a <- 11:12
+x2$a <- 11
 x2$b <- list(tibble(c = 13:14, d = 15:16))
 x2$c <- tibble(e = 17:18, f = 19:20)
 
 # fails
-x2$a <- c("a", "b")
-#> Error in `set2()` at struct/R/struct.R:77:3:
-#> ! Can't convert `value` <character> to <integer>.
+x2$a <- c(11, 12)
+#> Error in `struct_cast()` at struct/R/modify.R:8:3:
+#> ! not a scalar
+x2$a <- "a"
+#> Error in `structure()` at struct/R/classes.R:52:11:
+#> ! Can't convert `new` <character> to <double>.
 x2$b <- list("a", "b")
-#> Error in `set2()` at struct/R/struct.R:77:3:
-#> ! Can't convert `value` <struct> to <struct>.
+#> Error in `struct_cast()` at struct/R/modify.R:8:3:
+#> ! Can't convert `..1` <character> to <tibble_struct>.
 x2$c <- 1
-#> Error in `set2()` at struct/R/struct.R:77:3:
-#> ! Can't convert `value` <double> to <struct>.
+#> Error in `struct_cast()` at struct/R/modify.R:8:3:
+#> ! Can't convert `new` <double> to <tbl_df>.
 x2[["z"]]
-#> Error in `subset2()` at struct/R/struct.R:31:3:
-#> ! invalid index
+#> Error in `x2[["z"]]`:
+#> ! Invalid index
+#> ✖ element `z` not found
 ```

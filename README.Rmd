@@ -39,21 +39,26 @@ remotes::install_github("cynkra/struct")
 library(struct)
 library(tibble)
 
-x1 <- tibble(
-  a = 1:2,
+x1 <- list(
+  a = 1,
   b = list(tibble(c = 3:4, d = 5:6)),
-  c = tibble(e = 7:8, f = 9:10)
+  c = tibble(e = 7:8, f = 9:10),
+  y = list(z = c("a", "b"))
 )
+x2 <- deep_struct(x1)
 
-x2 <- struct(x1)
+x2
+
+print_tree(x2)
 
 # works
-x2$a <- 11:12
+x2$a <- 11
 x2$b <- list(tibble(c = 13:14, d = 15:16))
 x2$c <- tibble(e = 17:18, f = 19:20)
 
 # fails
-x2$a <- c("a", "b")
+x2$a <- c(11, 12)
+x2$a <- "a"
 x2$b <- list("a", "b")
 x2$c <- 1
 x2[["z"]]
