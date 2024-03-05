@@ -41,11 +41,15 @@ library(tibble)
 
 x1 <- tibble(
   a = 1:2,
-  b = list(tibble(c = 3:4, d = 5:6)),
-  c = tibble(e = 7:8, f = 9:10)
+  b = list(tibble(d = 3:4, e = 5:6),  tibble(d = 7:8, e = 9:10)),
+  c = tibble(g = 7:8, h = 9:10)
 )
 
-x2 <- struct(x1)
+x2 <- deep_struct(x1)
+
+x2
+
+print_tree(x2)
 
 # works
 x2$a <- 11:12
