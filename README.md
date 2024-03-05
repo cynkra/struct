@@ -20,7 +20,8 @@ with the output, and apply coercion if necessary.
 Install with:
 
 ``` r
-remotes::install_github("cynkra/struct")
+# install.packages("pak")
+pak::pak("cynkra/struct")
 ```
 
 ## Example
