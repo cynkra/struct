@@ -2,7 +2,7 @@ Package: struct
 Title: Strict modification of objects
 Version: 0.0.0.9000
 Authors@R: 
-    person("antoine", "fabri", , "antoine.fabri@gmail.com", role = c("aut", "cre"))
+    person("Antoine", "Fabri", , "antoine.fabri@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
